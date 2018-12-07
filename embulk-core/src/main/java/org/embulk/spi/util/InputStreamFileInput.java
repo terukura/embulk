@@ -14,11 +14,13 @@ public class InputStreamFileInput implements FileInput {
         public InputStreamWithHints(final InputStream inputStream, final String hintOfInputFileNameForLogging) {
             this.inputStream = inputStream;
             this.hintOfInputFileNameForLogging = Optional.ofNullable(hintOfInputFileNameForLogging);
+            System.out.println("value is set: " + this.hintOfInputFileNameForLogging);
         }
 
         public InputStreamWithHints(final InputStream inputStream) {
             this.inputStream = inputStream;
             this.hintOfInputFileNameForLogging = Optional.empty();
+            System.out.println("empty value is set");
         }
 
         public InputStream getInputStream() {
@@ -143,6 +145,7 @@ public class InputStreamFileInput implements FileInput {
     }
 
     public Buffer poll() {
+        System.out.println("poll() was called");
         if (current == null || current.getInputStream() == null) {
             throw new IllegalStateException("nextFile() must be called before poll()");
         }
@@ -173,6 +176,8 @@ public class InputStreamFileInput implements FileInput {
                 current = null;
             }
             current = provider.openNextWithHints();
+            System.out.println(Thread.currentThread().getStackTrace()[3]);
+            System.out.println("openNextWithHints() was called");
             return current != null && current.getInputStream() != null;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -181,6 +186,7 @@ public class InputStreamFileInput implements FileInput {
 
     public void close() {
         try {
+            System.out.println("close() was called");
             try {
                 if (current != null && current.getInputStream() != null) {
                     current.getInputStream().close();
@@ -200,6 +206,13 @@ public class InputStreamFileInput implements FileInput {
     }
 
     protected final Optional<String> getHintOfCurrentInputFileNameForLogging() {
+        if (current == null) {
+            System.out.println("209 null");
+        }
+        else {
+            System.out.println("212 not null");
+            System.out.println(current.getHintOfInputFileNameForLogging().orElse(""));
+        }
         if (current != null) {
             return current.getHintOfInputFileNameForLogging();
         }

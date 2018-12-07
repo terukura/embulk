@@ -138,7 +138,7 @@ public class FileInputRunner implements InputPlugin, ConfigurableGuessInputPlugi
                 FileInput fileInput = Decoders.open(decoderPlugins, task.getDecoderTaskSources(), tran);
                 closer.closeThis(fileInput);
                 parserPlugin.run(task.getParserTaskSource(), schema, fileInput, output);
-                Exec.getLogger(FileInputRunner.class).info("Loading file [{}]", fromFileInputPlugin.hintOfInputFileNameForLogging().orElse("-"));
+                Exec.getLogger(FileInputRunner.class).error("Loading file [{}]", fileInput.hintOfInputFileNameForLogging().orElse("-"));
                 TaskReport report = tran.commit();  // TODO check output.finish() is called. wrap
                 aborter.dontAbort();
                 return report;
